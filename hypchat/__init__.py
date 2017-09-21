@@ -91,6 +91,7 @@ class HypChat(object):
         self.emoticons = Linker('{0}/v2/emoticon'.format(endpoint), _requests=self._requests)
         self.rooms = Linker('{0}/v2/room'.format(endpoint), _requests=self._requests)
         self.users_url = '{0}/v2/user'.format(endpoint)
+        self.invitation_url = '{0}/v2/invite/user'.format(endpoint)
         self.endpoint = endpoint
 
     def users(self, **ops):
@@ -145,6 +146,18 @@ class HypChat(object):
         'password': password,
         }
         resp = self._requests.post(self.users_url, data=data)
+        return Linker._obj_from_text(resp.text, self._requests)
+    
+    def invite_user(self, name, email, title=''):
+        """
+        Invites a new user.
+        """
+        data = {
+        'name': name,
+        'email': email,
+        'title': title,
+        }
+        resp = self._requests.post(self.invitation_url, data=data)
         return Linker._obj_from_text(resp.text, self._requests)
 
     def get_room(self, id_or_name, **kwargs):
